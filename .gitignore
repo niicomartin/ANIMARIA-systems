@@ -1,0 +1,35 @@
+# dependencias y builds
+node_modules/
+.next/
+out/
+build/
+dist/
+release/
+
+# binarios pesados
+*.exe
+*.msi
+*.dmg
+*.zip
+*.7z
+*.rar
+*.node
+*.jar
+*.war
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# entorno
+.env
+.env.local
+.env.*.local
+
+# sistema/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

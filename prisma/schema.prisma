@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Cliente {
+  id        Int      @id @default(autoincrement())
+  codigo    String?
+  nombre    String
+  apellido  String?
+  telefono  String
+  direccion String?
+  ciudad    String?
+  localidad String?
+  provincia String?
+  deuda     Float    @default(0)
+  origen    String   @default("SYSTEM")
+  externalId String?
+  creadoEn  DateTime @default(now())
+
+  pedidos   PedidoWeb[]
+
+  @@map("clientes")
+}
+
+model Producto {
+  id             Int      @id @default(autoincrement())
+  codigo         String?
+  nombre         String
+  marca          String
+  kg             String
+  tipoMascota    String
+  etapa          String
+  stock          Int
+  precioCosto    Float    @default(0)
+  precio         Float
+  imagen         String?
+  origen         String   @default("SYSTEM")
+  externalId     String?
+
+  itemsPedido    PedidoWebItem[]
+
+  @@map("productos")
+}
+
+model PedidoWeb {
+  id          Int      @id @default(autoincrement())
+  externalId  String?
+  clienteId   Int?
+  cliente     Cliente? @relation(fields: [clienteId], references: [id])
+
+  nombre      String
+  telefono    String
+  direccion   String?
+  ciudad      String?
+  localidad   String?
+  provincia   String?
+  metodoPago  String   @default("Pago en domicilio")
+  subtotal    Float    @default(0)
+  envio       Float    @default(0)
+  total       Float
+  estado      String   @default("PENDIENTE")
+  origen      String   @default("WEB")
+  ventaId     Int?
+  fecha       DateTime @default(now())
+
+  items       PedidoWebItem[]
+
+  @@map("pedidos_web")
+}
+
+model PedidoWebItem {
+  id         Int @id @default(autoincrement())
+
+  pedidoId   Int
+  pedido     PedidoWeb @relation(fields: [pedidoId], references: [id])
+
+  productoId Int?
+  producto   Producto? @relation(fields: [productoId], references: [id])
+
+  codigo     String?
+  nombre     String
+  marca      String?
+  kg         String?
+  tipoMascota String?
+  etapa      String?
+  cantidad   Int
+  precio     Float
+  precioCosto Float @default(0)
+  subtotal   Float
+
+  @@map("pedido_web_items")
+}
+
+model Venta {
+  id           Int      @id @default(autoincrement())
+  cliente      String
+  telefono     String
+  direccion    String?
+  ciudad       String?
+  provincia    String?
+  metodoPago   String
+  subtotal     Float    @default(0)
+  subtotalSinDescuento Float @default(0)
+  descuentoPorcentaje Float @default(0)
+  envio        Float    @default(0)
+  entrega      Float    @default(0)
+  deuda        Float    @default(0)
+  total        Float
+  costoTotal   Float    @default(0)
+  gananciaTotal Float   @default(0)
+  productos    Json?
+  origen       String   @default("SYSTEM")
+  externalId   String?
+  fecha        DateTime @default(now())
+
+  @@map("ventas")
+}
